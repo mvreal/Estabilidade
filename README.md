@@ -53,7 +53,7 @@ concrete.  PCI Journal, May-June, 1987.
 
 ## __Aula 01__
 
-### [Capítulo 1 - Fundamentos](https://nbviewer.org/github/mvreal/TAC/blob/main/Capitulo_1-1.ipynb)
+### [Capítulo 1 - Fundamentos](https://nbviewer.org/github/mvreal/Estabilidade/blob/main/Capitulo_1-1.ipynb)
 
 #### 1.1 - Instabilidade na compressão axial - flambagem
 #### 1.2 - Instabilidade na flexão composta
@@ -61,7 +61,7 @@ concrete.  PCI Journal, May-June, 1987.
 
 ### __Aula 02__
 
-### [Capítulo 2 - Verificação da estabilidade de um pilar pelo método do equilíbrio](https://nbviewer.org/github/mvreal/TAC/blob/main/Capitulo_2-1.ipynb)
+### [Capítulo 2 - Verificação da estabilidade de um pilar pelo método do equilíbrio](https://nbviewer.org/github/mvreal/Estabilidade/blob/main/Capitulo_2-1.ipynb)
 
 #### 2.1 - O método do equilíbrio
 #### 2.2 - Determinação dos deslocamentos pela analogia de Mohr
@@ -74,17 +74,10 @@ concrete.  PCI Journal, May-June, 1987.
 
 ## __Aula 03__
 
-### [Capítulo 3 - Exemplos de aplicação](https://nbviewer.org/github/mvreal/TAC/blob/main/Capitulo_3-1.ipynb)
+### [Capítulo 3 - Exemplos de aplicação](https://nbviewer.org/github/mvreal/Estabilidade/blob/main/Capitulo_3-1.ipynb)
 #### 3.1 - Pilar bi-rotulado de seção variável sob carregamento lateral
 #### 3.2 - Pilar engastado-livre de seção variável carregado no topo
 #### 3.3 - Pilar engastado-livre com redução de seção
 
 
 
-
-## __Aula 05__
-
-### [Capítulo 5 - Exemplos de aplicação](https://nbviewer.org/github/mvreal/TAC/blob/main/Capitulo_5-1.ipynb)
-
-#### 5.1 - Pilar de seção vazada
-#### 5.2 - Viga de seção I
