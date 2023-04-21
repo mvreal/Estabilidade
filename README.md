@@ -67,9 +67,10 @@ concrete.  PCI Journal, May-June, 1987.
 #### 2.2 - Determinação dos deslocamentos pela analogia de Mohr
 #### 2.3 - Roteiro do método do equilíbrio
 #### 2.4 - Determinação das curvaturas das seções a partir do momento fletor e do esforço normal atuante
-#### 2.5 - Instabilidade na flexão composta oblíqua
-#### 2.6 - Princípios básicos de cálculo segundo a norma NBR-6118:2014
-#### 2.7 - Consideração da fluência
+#### 2.5 - Derivadas parciais dos esforços resistentes em relação a $\alpha$, $b$, $c$
+#### 2.6 - Instabilidade na flexão composta oblíqua
+#### 2.7 - Princípios básicos de cálculo segundo a norma NBR-6118:2014
+#### 2.8 - Consideração da fluência
 
 
 ## __Aula 03__
