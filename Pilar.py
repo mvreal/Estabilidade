@@ -6,8 +6,10 @@ class PilarEsbelto():
     ivinc = 0
     nsec = 0
     compr = 0.00
-    fyd = 0.00
+    fck = 0.00
     fcd = 0.00
+    fyk = 0.00
+    fyd = 0.00
     ta = " "
     es = 0.00
     fi = 0.00
@@ -22,6 +24,10 @@ class PilarEsbelto():
     xb0 = []
     yb0 = []
     ass0 = []
+    y = []
+    b0 = []
+    c0 = []
+    y0 = []
 
     def __init__(self): 
         pass
@@ -45,137 +51,144 @@ class PilarEsbelto():
                 linha = linha.split()
                 self.ta =linha[0]
                 self.fyk, self.es, self.fck = map(float, linha[1:])
-                fyd = self.fyk / 1.15
-                fcd = 1.1 * self.fck / 1.4 / 0.85
+                self.fyd = self.fyk / 1.15
+                self.fcd = 1.1 * self.fck / 1.4 / 0.85
                 saida.write(f"{self.ta} {self.fyk} {self.es} {self.fck}\n")
        
-                np0, nb0, pv, ph, mm, pp = [], [], [], [], [], []
-                xp0, yp0, xb0, yb0, ass0 = [], [], [], [], []
+                self.np0, self.nb0, self.pv, self.ph, self.mm, self.pp = [], [], [], [], [], []
+                self.xp0, self.yp0, self.xb0, self.yb0, self.ass0 = [], [], [], [], []
                 for i in range(1, int(self.nsec) + 1):
-                    np0i, nb0i = map(float, input().split())
+                    linha = entrada.readline() 
+                    linha = linha.split()
+                    np0i, nb0i = map(int, linha)
                     saida.write(f"{np0i} {nb0i}\n")
-                    np0.append(np0i)
-                    nb0.append(nb0i)
+                    self.np0.append(np0i)
+                    self.nb0.append(nb0i)
                 
-                    pvi, phi, mmi, ppi = map(float, input().split())
+                    linha = entrada.readline() 
+                    linha = linha.split()
+                    pvi, phi, mmi, ppi = map(float, linha)
                     saida.write(f"{pvi} {phi} {mmi} {ppi}\n")
-                    pv.append(pvi)
-                    ph.append(phi)
-                    mm.append(mmi)
-                    pp.append(ppi)
+                    self.pv.append(pvi)
+                    self.ph.append(phi)
+                    self.mm.append(mmi)
+                    self.pp.append(ppi)
                 
                     xp0i, yp0i = [], []
                     for j in range(int(np0i)):
-                        xj, yj = map(float, input().split())
+                        linha = entrada.readline() 
+                        linha = linha.split()
+                        xj, yj = map(float, linha)
                         saida.write(f"{xj} {yj}\n")
                         xp0i.append(xj)
                         yp0i.append(yj)
-                    xp0.append(xp0i)
-                    yp0.append(yp0i)
+                    self.xp0.append(xp0i)
+                    self.yp0.append(yp0i)
                 
                     xb0i, yb0i, ass0i = [], [], []
                     for j in range(int(nb0i)):
-                        xj, yj, assj = map(float, input().split())
+                        linha = entrada.readline() 
+                        linha = linha.split()
+                        xj, yj, assj = map(float, linha)
                         saida.write(f"{xj} {yj} {assj}\n")
                         xb0i.append(xj)
                         yb0i.append(yj)
                         ass0i.append(assj)
-                    xb0.append(xb0i)
-                    yb0.append(yb0i)
-                    ass0.append(ass0i)
+                    self.xb0.append(xb0i)
+                    self.yb0.append(yb0i)
+                    self.ass0.append(ass0i)
                 
         self.y, self.b0, self.c0 = np.zeros(self.nsec), np.zeros(self.nsec), np.zeros(self.nsec)
         
+    def curvatura(self, np, xp, yp, nb, xb, yb, ass):
+            k = [0] * 3
+            u = [0] * 2
+            p = [0] * 2
+            count = 0
+
+            while True:
+                count += 1
+                esforcos(fi, ta, es, fyd, fcd, np, xp, yp, nb, xb, yb, ass, b, c, epss, epsi, nr, mrx, k, ruptura)
+                
+                if ruptura == 0:
+                    b /= 2
+                    c /= 2
+                    continue
+                
+                p[0] = max - mrx
+                p[1] = na - nr
+                solve(k, u, p)
+
+                if count > 200:
+                    break
+                
+                aux = (sin(count * 3.1415 / 200) ** 0.1)
+                b += u[0] * aux
+                c += u[1] * aux
+
+                if (p[0] ** 2 + p[1] ** 2) / (max ** 2 + na ** 2) < 1E-20:
+                    break
+
+            if count > 200:
+                print(">>>>>>>>>>>>>>> ruptura")
+                # Stop (if you want to stop execution at this point, uncomment this line)
 
 
-    def estavel():
-        dx = compr / (nsec - 1)
+    def estavel(self):
+        dx = self.compr / (self.nsec - 1)
         Count = 0
         while True:
             Count += 1
-            n = [-pv[0]]
-            v = [-ph[0]]
-            m = [mm[0]]
-            for i in range(nsec - 1):
-                n.append(n[i] - pv[i + 1])
-                v.append(v[i] - (pp[i] + pp[i + 1]) / 2 * dx - ph[i + 1])
-                m.append(m[i] + v[i] * dx - n[i] * (y[i + 1] - y[i]) + mm[i + 1] - pp[i] * dx ** 2 / 2 - (pp[i + 1] - pp[i]) * dx ** 2 / 6)
-            for i in range(nsec):
-                y0[i] = y[i]
-                np = np0[i]
-                nb = nb0[i]
-                xp = [xp0[i][j] for j in range(np)]
-                yp = [yp0[i][j] for j in range(np)]
-                xb = [xb0[i][j] for j in range(nb)]
-                yb = [yb0[i][j] for j in range(nb)]
-                ass = [ass0[i][j] for j in range(nb)]
-                curvatura(fi, ta, es, fyd, fcd, np, xp, yp, nb, xb, yb, ass, b0[i], c0[i], n[i], m[i])
-            w = [0] * nsec
-            w[0] = dx / 12 * (3.5 * b0[0] + 3 * b0[1] - 0.5 * b0[2])
-            w[-1] = dx / 12 * (3.5 * b0[-1] + 3 * b0[-2] - 0.5 * b0[-3])
-            if ivinc == 1:
+            n = [-self.pv[0]]
+            v = [-self.ph[0]]
+            m = [self.mm[0]]
+            for i in range(self.nsec - 1):
+                n.append(n[i] - self.pv[i + 1])
+                v.append(v[i] - (self.pp[i] + self.pp[i + 1]) / 2 * dx - self.ph[i + 1])
+                m.append(m[i] + v[i] * dx - n[i] * (self.y[i + 1] - self.y[i]) + self.mm[i + 1] - self.pp[i] * dx ** 2 / 2 - (self.pp[i + 1] - self.pp[i]) * dx ** 2 / 6)
+            for i in range(self.nsec):
+                self.y0[i] = self.y[i]
+                np = self.np0[i]
+                nb = self.nb0[i]
+                xp = [self.xp0[i][j] for j in range(np)]
+                yp = [self.yp0[i][j] for j in range(np)]
+                xb = [self.xb0[i][j] for j in range(nb)]
+                yb = [self.yb0[i][j] for j in range(nb)]
+                ass = [self.ass0[i][j] for j in range(nb)]
+                n[i], m[i], b, c = curvatura(self, np, xp, yp, nb, xb, yb, ass)
+            w = [0] * self.nsec
+            w[0] = dx / 12 * (3.5 * self.b0[0] + 3 * self.b0[1] - 0.5 * self.b0[2])
+            w[-1] = dx / 12 * (3.5 * self.b0[-1] + 3 * self.b0[-2] - 0.5 * self.b0[-3])
+            if self.ivinc == 1:
                 r0 = w[0] + w[-1]
-                m0 = -compr * w[-1]
+                m0 = -self.compr * w[-1]
             else:
                 r0 = w[0]
                 m0 = 0
             for i in range(1, nsec - 1):
-                w[i] = dx / 12 * (b0[i - 1] + 10 * b0[i] + b0[i + 1])
-                if ivinc == 1:
+                w[i] = dx / 12 * (self.b0[i - 1] + 10 * self.b0[i] + self.b0[i + 1])
+                if self.ivinc == 1:
                     r0 += w[i]
                     m0 -= dx * (i - 1) * w[i]
                 else:
-                    r0 += w[i] * (compr - (i - 1) * dx) / compr
+                    r0 += w[i] * (self.compr - (i - 1) * dx) / self.compr
             y[0] = m0
-            t = [0] * nsec
+            t = [0] * self.nsec
             t[0] = r0 - w[0]
-            for i in range(1, nsec - 1):
-                y[i] = y[i - 1] + dx * t[i - 1]
+            for i in range(1, self.nsec - 1):
+                self.y[i] = self.y[i - 1] + dx * t[i - 1]
                 t[i] = t[i - 1] - w[i]
             A = 0
             b = 0
-            for i in range(nsec - 1):
-                A += y[i] ** 2
-                b += (y[i] - y0[i]) ** 2
+            for i in range(self.nsec - 1):
+                A += self.y[i] ** 2
+                b += (self.y[i] - self.y0[i]) ** 2
             if Count > 200 or b / A <= 1e-20:
                 break
-        with open(arquivo, "r") as f:
-            Form1.Text1 = f
+        
 
 
-    def curvatura(fi, ta, es, fyd, fcd, np, xp, yp, nb, xb, yb, ass, b, c, na, max):
-        k = [0] * 3
-        u = [0] * 2
-        p = [0] * 2
-        count = 0
-
-        while True:
-            count += 1
-            esforcos(fi, ta, es, fyd, fcd, np, xp, yp, nb, xb, yb, ass, b, c, epss, epsi, nr, mrx, k, ruptura)
-            
-            if ruptura == 0:
-                b /= 2
-                c /= 2
-                continue
-            
-            p[0] = max - mrx
-            p[1] = na - nr
-            solve(k, u, p)
-
-            if count > 200:
-                break
-            
-            aux = (sin(count * 3.1415 / 200) ** 0.1)
-            b += u[0] * aux
-            c += u[1] * aux
-
-            if (p[0] ** 2 + p[1] ** 2) / (max ** 2 + na ** 2) < 1E-20:
-                break
-
-        if count > 200:
-            print(">>>>>>>>>>>>>>> ruptura")
-            # Stop (if you want to stop execution at this point, uncomment this line)
-
+    
 
 
     def difer(i, y01, y12, xp, yp, eps0, eps1, x1i, y1i, x2i, y2i, x1ii, y1ii, x2ii, y2ii):
